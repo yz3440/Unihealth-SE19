@@ -1,8 +1,9 @@
+import hashlib
 from datetime import datetime
 
 from flask import g
 
-from config.authentication import auth, jwt
+from config.authentication import auth, jwt, refresh_jwt
 from database.database import db
 
 
@@ -11,11 +12,13 @@ class Person(db.Model):
     __tablename__ = 'person'
 
     # User phone number as primary key.
-    phone = db.Column('phone', db.String, primary_key=True,
-                      unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    fullname = db.Column('fullname', db.String, nullable=False)
-
+    first_name = db.Column('first_name', db.String, nullable=False)
+    last_name = db.Column('last_name', db.String, nullable=False)
+    gender = db.Column("gender", db.String, nullable=False)
+    birthday = db.Column("birthday", db.Date, nullable=False)
+    phone = db.Column('phone', db.String, unique=True, nullable=False)
     password = db.Column('password', db.String, nullable=False)
 
     created = db.Column(db.DateTime, default=datetime.utcnow)
@@ -24,16 +27,19 @@ class Person(db.Model):
     role = db.Column('role', db.String, nullable=False, default='patient')
     __mapper_args__ = {'polymorphic_on': role}
 
-    # Generates auth token.
-    def generate_auth_token(self):
+    def verify_password(self, password):
+        hashedPassword = hashlib.sha256(
+            password.encode("utf-8")).hexdigest()
+        return hashedPassword == self.password
 
-        # Check if doctor.
+    # Generates access token.
+    def generate_access_token(self):
+
         if self.role == 'doctor':
             # Generate doctor token with flag 1.
             token = jwt.dumps({'phone': self.phone, 'admin': 1})
             return token
 
-        # Check if admin.
         elif self.role == 'admin':
             # Generate admin token with flag 2.
             token = jwt.dumps({'phone': self.phone, 'admin': 2})
@@ -41,6 +47,10 @@ class Person(db.Model):
 
         # Return normal patient flag.
         return jwt.dumps({'phone': self.phone, 'admin': 0})
+
+    # Generates refresh token.
+    def generate_refresh_token(self):
+        return refresh_jwt.dumps({'phone': self.phone})
 
     # Generates a new access token from refresh token.
     @staticmethod

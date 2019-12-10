@@ -29,7 +29,6 @@ export default {
   data() {
     return {};
   },
-  props: {},
   mounted() {
     // ProfileCard.methods.addQuickLog();
   }

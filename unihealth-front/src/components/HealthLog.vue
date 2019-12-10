@@ -1,17 +1,16 @@
 <template>
   <div>
     <!-- Health Records -->
-
     <md-content class="md-scrollbar">
-      <md-list>
-        <md-list-item v-for="log in logs" v-bind:key="log.message">
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item">{{log.type}}</div>
-            <div class="md-layout-item">{{log.value}}</div>
-            <div class="md-layout-item">{{log.timestamp}}</div>
-          </div>
-        </md-list-item>
-      </md-list>
+      <div>
+        <md-table v-model="logs" md-sort="timestamp" md-sort-order="desc" md-fixed-header>
+          <md-table-row slot="md-table-row" slot-scope="{ item }">
+            <md-table-cell md-label="Disease" md-sort-by="type">{{ item.type }}</md-table-cell>
+            <md-table-cell md-label="Symptom" md-sort-by="value">{{ item.value }}</md-table-cell>
+            <md-table-cell md-label="Logged Time" md-sort-by="timestamp">{{ item.timestamp }}</md-table-cell>
+          </md-table-row>
+        </md-table>
+      </div>
     </md-content>
   </div>
 </template>
@@ -21,13 +20,26 @@ export default {
   name: "health-log",
   data() {
     return {
-      logs: [
-        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
-        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" }
-      ]
+      logs: []
     };
   },
-  methods: {}
+  methods: {
+    fetchData() {
+      this.logs = [
+        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
+        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" },
+        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
+        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" },
+        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
+        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" },
+        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
+        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" }
+      ];
+    }
+  },
+  mounted() {
+    this.fetchData();
+  }
 };
 </script>
 
@@ -38,6 +50,7 @@ h2 {
   font-weight: normal;
 }
 .md-content {
+  height: 500px;
   max-height: 500px;
   overflow: auto;
 }

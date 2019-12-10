@@ -86,19 +86,19 @@
             </div>
           </div>
 
-          <!-- Email Field -->
-          <md-field :class="getValidationClass('email')">
-            <label for="email">Email</label>
+          <!-- Phone Number Field -->
+          <md-field :class="getValidationClass('phone')">
+            <label for="phone">Phone Number</label>
             <md-input
-              type="email"
-              name="email"
-              id="email"
-              autocomplete="email"
-              v-model="form.email"
+              type="phone"
+              name="phone"
+              id="phone"
+              autocomplete="phone"
+              v-model="form.phone"
               :disabled="sending"
             />
-            <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-            <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
+            <span class="md-error" v-if="!$v.form.phone.required">The phone number is required</span>
+            <span class="md-error" v-else-if="!$v.form.phone.numeric">Invalid phone number</span>
           </md-field>
 
           <!-- Password Field -->
@@ -149,7 +149,7 @@
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
         <md-card-actions>
-          <md-button href="#/register" class="md-accent">I'm a Doctor</md-button>
+          <md-button href="#/register" @click="test" class="md-accent">I'm a Doctor</md-button>
           <md-button type="submit" class="md-primary" :disabled="sending">Create new patient user</md-button>
         </md-card-actions>
       </md-card>
@@ -161,12 +161,12 @@
 
 <script>
 import { validationMixin } from "vuelidate";
+
 import {
   required,
-  email,
   minLength,
   maxLength,
-  maxValue,
+  numeric,
   sameAs
 } from "vuelidate/lib/validators";
 
@@ -185,7 +185,7 @@ export default {
       lastName: null,
       gender: null,
       birthday: null,
-      email: null,
+      phone: null,
       password: null,
       repeatPassword: null
     },
@@ -206,13 +206,12 @@ export default {
       birthday: {
         required
       },
-
       gender: {
         required
       },
-      email: {
+      phone: {
         required,
-        email
+        numeric
       },
       password: {
         required,
@@ -238,21 +237,23 @@ export default {
       this.$v.$reset();
       this.form.firstName = null;
       this.form.lastName = null;
-      this.form.birthday = null;
       this.form.gender = null;
-      this.form.email = null;
+      this.form.birthday = null;
+      this.form.phone = null;
       this.form.password = null;
       this.form.repeatPassword = null;
     },
     saveUser() {
       this.sending = true;
-
       // Instead of this timeout, here you can call your API
+      // this.test();
       window.setTimeout(() => {
         this.lastUser = `${this.form.firstName} ${this.form.lastName}`;
         this.userSaved = true;
         this.sending = false;
-        this.clearForm();
+        console.log(this.form);
+
+        // this.clearForm();
       }, 1500);
     },
     validateUser() {
@@ -260,6 +261,23 @@ export default {
       if (!this.$v.$invalid) {
         this.saveUser();
       }
+    },
+    test() {
+      this.$http
+        .post(this.apiUrl + "/auth/register", {
+          firstName: this.form.firstName,
+          lastName: this.form.lastName,
+          gender: this.form.gender,
+          birthday: this.form.birthday,
+          phone: this.form.phone,
+          password: this.form.password
+        })
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   computed: {
@@ -270,7 +288,6 @@ export default {
       var yyyy = today.getFullYear();
 
       if (dd < 10) dd = "0" + dd;
-
       if (mm < 10) mm = "0" + mm;
 
       today = yyyy + "-" + mm + "-" + dd;

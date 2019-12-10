@@ -6,19 +6,25 @@ import router from './router'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import "./assets/scss/theme.scss";
+import axios from 'axios';
 
-Vue.use(VueMaterial)
 Vue.config.productionTip = true
+Vue.use(VueMaterial)
+Vue.prototype.$http = axios
+
 
 const jwt = {
   accessToken: 'shit',
   refreshToken: null,
 };
 
+const apiUrl = "0.0.0.0:5001"
+
 Vue.mixin({
   data() {
     return {
-      jwt
+      jwt,
+      apiUrl
     };
   }
 });

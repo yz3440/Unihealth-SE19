@@ -1,5 +1,4 @@
 import logging
-import hashlib
 from datetime import datetime
 
 from flask import request
@@ -18,14 +17,20 @@ class Register(Resource):
     @staticmethod
     def post():
         try:
-            phone, fullname, password = request.json.get('phone').strip(), request.json.get('fullname').strip(), \
-                request.json.get('password').strip()
+            first_name, last_name, gender, birthday, phone, password = \
+                request.json.get('firstName').strip(), request.json.get('lastName').strip(), \
+                request.json.get('gender').strip(), request.json.get('birthday').strip(), \
+                request.json.get('phone').strip(
+                ),  request.json.get('password').strip()
+            birthday = datetime.strptime(birthday, '%Y/%m/%d')
 
         except Exception as why:
-            logging.info("Phone, fullname or password is wrong. " + str(why))
+            logging.info("The user input is invalid. " + str(why))
             return error.INVALID_INPUT
 
-        if phone is None or fullname is None or password is None:
+        print(request.json)
+
+        if not first_name or not last_name or not gender or not birthday or not phone or not password:
             return error.INVALID_INPUT
 
         person = Person.query.filter_by(phone=phone).first()
@@ -37,8 +42,8 @@ class Register(Resource):
         hashedPassword = hashlib.sha256(
             password.encode("utf-8")).hexdigest()
 
-        person = Patient(phone=phone, fullname=fullname,
-                         password=hashedPassword)
+        person = Patient(first_name=first_name, last_name=last_name, gender=gender,
+                         birthday=birthday, phone=phone, password=password)
 
         db.session.add(person)
         db.session.commit()
@@ -49,7 +54,6 @@ class Register(Resource):
 class Login(Resource):
     @staticmethod
     def post():
-
         try:
             phone, password = request.json.get(
                 'phone').strip(), request.json.get('password').strip()
@@ -61,22 +65,20 @@ class Login(Resource):
         if phone is None or password is None:
             return error.INVALID_INPUT
 
-        # Encrypts password
-        hashedPassword = hashlib.sha256(
-            password.encode("utf-8")).hexdigest()
         person = Person.query.filter_by(
-            phone=phone, password=hashedPassword).first()
+            phone=phone).first()
 
         if person is None:
             return error.DOES_NOT_EXIST
+        elif not person.verify_password(password):
+            return error.INVALID_PASSWORD
 
-        access_token = person.generate_auth_token()
-
-        # Generate refresh token.
-        refresh_token = refresh_jwt.dumps({'phone': phone})
+        # Generate access token & refresh token
+        access_token = person.generate_access_token()
+        refresh_token = person.generate_refresh_token()
 
         # Return access token and refresh token.
-        return {'access_token': str(access_token), 'refresh_token': str(refresh_token)}
+        return {'access_token': access_token.decode('utf-8'), 'refresh_token': refresh_token.decode('utf-8')}
 
 
 class Logout(Resource):

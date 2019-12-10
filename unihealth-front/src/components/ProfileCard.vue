@@ -41,17 +41,11 @@ export default {
       }
     };
   },
-  props: {
-    bglanding: {
-      type: String,
-      default: require("@/assets/img/bg-landing.jpg")
-    }
-  },
   methods: {
     addQuickLog() {
       alert("Adding quick log");
     },
-    updateProfileData() {
+    fetchData() {
       this.profile = {
         firstName: "Yufeng",
         lastName: "Zhao",
@@ -62,7 +56,7 @@ export default {
     }
   },
   mounted() {
-    this.updateProfileData();
+    this.fetchData();
   }
 };
 </script>

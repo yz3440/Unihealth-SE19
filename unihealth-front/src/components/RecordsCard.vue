@@ -6,16 +6,10 @@
         <health-log></health-log>
       </md-tab>
       <md-tab id="tab-medical-report" md-label="Medical Report" to="/profile/report">
-        <md-list>
-          <md-list-item to="/components/tabs/pages/1">Go to Subpage 1</md-list-item>
-          <md-list-item to="/components/tabs/pages/2">Go to Subpage 2</md-list-item>
-        </md-list>
+        <medical-report></medical-report>
       </md-tab>
       <md-tab id="tab-medical-reminder" md-label="Medication Reminder" to="/profile/medication">
-        <md-list>
-          <md-list-item to="/components/tabs/pages/1">Go to Subpage 1</md-list-item>
-          <md-list-item to="/components/tabs/pages/2">Go to Subpage 2</md-list-item>
-        </md-list>
+        <medication-reminder></medication-reminder>
       </md-tab>
     </md-tabs>
   </div>
@@ -23,26 +17,16 @@
 
 <script>
 import HealthLog from "../components/HealthLog";
+import MedicalReport from "../components/MedicalReport";
+import MedicationReminder from "../components/MedicationReminder";
 
 export default {
   name: "records-card",
-  components: { HealthLog },
+  components: { HealthLog, MedicalReport, MedicationReminder },
   data() {
-    return {
-      profile: {}
-    };
+    return {};
   },
-  props: {
-    bglanding: {
-      type: String,
-      default: require("@/assets/img/bg-landing.jpg")
-    }
-  },
-  methods: {
-    addQuickLog() {
-      alert("dfs");
-    }
-  }
+  methods: {}
 };
 </script>
 
