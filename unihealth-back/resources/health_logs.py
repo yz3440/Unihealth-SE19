@@ -18,6 +18,7 @@ health_logs_schema = HealthLogSchema(many=True)
 
 
 class HealthLogs(Resource):
+
     @staticmethod
     @auth.login_required
     def get():

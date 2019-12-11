@@ -16,11 +16,3 @@ class Doctor(Person):
         self.password = hashlib.sha256(
             password.encode("utf-8")).hexdigest()
         self.role = 'doctor'
-
-    def __repr__(self):
-        return "<Doctor(phone='%s', name='%s %s', password='%s', created='%s')>" % (
-            self.phone, self.first_name, self.last_name, self.password, self.created)
-
-    @property
-    def profile(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

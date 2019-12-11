@@ -4,6 +4,7 @@ from database.database import db
 
 
 class Patient(Person):
+
     __tablename__ = 'patient'
     __mapper_args__ = {'polymorphic_identity': 'patient'}
 
@@ -16,11 +17,3 @@ class Patient(Person):
         self.password = hashlib.sha256(
             password.encode("utf-8")).hexdigest()
         self.role = 'patient'
-
-    def __repr__(self):
-        return "<Patient(phone='%s', name='%s %s', password='%s', created='%s')>" % (
-            self.phone, self.first_name, self.last_name, self.password, self.created)
-
-    @property
-    def profile(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

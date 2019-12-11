@@ -1,6 +1,5 @@
 from models.person import *
-from database.database import db
-from database.database import ma
+from database.database import db, ma
 from datetime import datetime
 
 

@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import g
 
 from config.auth import auth, jwt, refresh_jwt
-from database.database import db
+from database.database import db, ma
 
 
 class Person(db.Model):
@@ -89,10 +89,8 @@ class Person(db.Model):
         # If does not verified, return false.
         return False
 
-    def __repr__(self):
-        return "<Person(phone='%s', fullname='%s', password='%s', created='%s', role='%s')>" % (
-            self.phone, self.fullname, self.password, self.created, self.role)
 
-    @property
-    def profile(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+class PersonSchema(ma.Schema):
+    class Meta:
+        fields = ('id', "first_name", "last_name",
+                  "birthday", "gender", "phone")

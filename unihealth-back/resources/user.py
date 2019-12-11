@@ -1,18 +1,17 @@
 import logging
 from datetime import datetime
 
-from flask import request, after_this_request
+from flask import request, g
 from flask_restful import Resource
 
 import error.errors as error
 from config.auth import auth, refresh_jwt
 from database.database import db
-from models.person import Person
+from models.person import Person, PersonSchema
 from models.patient import Patient
 from models.doctor import Doctor
-from models.token_blacklist import TokenBlacklist
 
-from models.health_log import HealthLog
+person_schema = PersonSchema()
 
 
 class User(Resource):
@@ -20,13 +19,15 @@ class User(Resource):
     # Register user with POST request
     @staticmethod
     def post():
+        print(request.json)
+
         try:
             first_name, last_name, gender, birthday, phone, password = \
                 request.json.get('firstName').strip(), request.json.get('lastName').strip(), \
                 request.json.get('gender').strip(), request.json.get('birthday').strip(), \
                 request.json.get('phone').strip(
                 ),  request.json.get('password').strip()
-            birthday = datetime.strptime(birthday, '%Y/%m/%d')
+            birthday = datetime.strptime(birthday, '%Y-%m-%d')
 
         except Exception as why:
             logging.info("The user input is invalid. " + str(why))
@@ -46,69 +47,16 @@ class User(Resource):
         db.session.add(person)
         db.session.commit()
 
-        return {'status': 'registration completed.'}
+        return {'msg': 'Registration Completed.'}, 200
 
-    # Login user with GET request
-    @staticmethod
-    def get():
-        @after_this_request
-        def set_token_cookie(response):
-            response.set_cookie('access_token', access_token,
-                                max_age=64800, httponly=True, path="/auth")
-            response.set_cookie('refresh_token', refresh_token,
-                                max_age=64800, httponly=True, path="/auth")
-            return response
-
-        try:
-            phone, password = request.json.get(
-                'phone').strip(), request.json.get('password').strip()
-
-        except Exception as why:
-            logging.info("Email or password is wrong. " + str(why))
-            return error.INVALID_INPUT
-
-        if phone is None or password is None:
-            return error.INVALID_INPUT
-
-        person = Person.query.filter_by(
-            phone=phone).first()
-
-        if person is None:
-            return error.DOES_NOT_EXIST
-        elif not person.verify_password(password):
-            return error.INVALID_PASSWORD
-
-        # Generate access token & refresh token
-        access_token = person.generate_access_token()
-        refresh_token = person.generate_refresh_token()
-
-        # Return access token & refresh token.
-        return {"msg": "Login successful."}, 200
-
-    # Logout user with DELETE request
+    # Get user info with GET request
     @staticmethod
     @auth.login_required
-    def delete():
+    def get():
 
-        # Get refresh token.
-        refresh_token = request.json.get('refresh_token')
+        person = Person.query.filter_by(phone=g.user).first()
 
-        # Get if the refresh token is in blacklist
-        ref = TokenBlacklist.query.filter_by(
-            refresh_token=refresh_token).first()
+        # Serializing person's data
+        response = person_schema.dump(person)
 
-        # Check refresh token has existed.
-        if ref is not None:
-            return {'status': 'already invalidated', 'refresh_token': refresh_token}
-
-        # Create a blacklist refresh token.
-        blacklist_refresh_token = TokenBlacklist(refresh_token=refresh_token)
-
-        # Add refresh token to session.
-        db.session.add(blacklist_refresh_token)
-
-        # Commit session.
-        db.session.commit()
-
-        # Return status of refresh token.
-        return {'status': 'invalidated', 'refresh_token': refresh_token}
+        return response
