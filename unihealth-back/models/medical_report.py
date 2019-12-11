@@ -3,7 +3,7 @@ from database.database import db, ma
 from datetime import datetime
 
 
-class HealthLog(db.Model):
+class MedicalReport(db.Model):
     __tablename__ = 'health_log'
 
     id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
@@ -14,8 +14,7 @@ class HealthLog(db.Model):
     reporter_id = db.Column("reporter_id", db.Integer,
                             db.ForeignKey('person.id'), nullable=True)
 
-    log_type = db.Column("type", db.String, db.ForeignKey(
-        'health_log_type.type'), nullable=False)
+    log_type = db.Column("type", db.String, nullable=False)
 
     log_value = db.Column("value", db.String, nullable=False)
 
@@ -24,5 +23,4 @@ class HealthLog(db.Model):
 
 class HealthLogSchema(ma.ModelSchema):
     class Meta:
-        include_fk = True
         model = HealthLog

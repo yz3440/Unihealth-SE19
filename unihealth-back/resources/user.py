@@ -19,8 +19,6 @@ class User(Resource):
     # Register user with POST request
     @staticmethod
     def post():
-        print(request.json)
-
         try:
             first_name, last_name, gender, birthday, phone, password = \
                 request.json.get('firstName').strip(), request.json.get('lastName').strip(), \

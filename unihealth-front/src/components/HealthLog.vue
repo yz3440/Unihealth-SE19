@@ -38,6 +38,7 @@ export default {
         })
         .catch(error => {
           console.log(error);
+          that.tryRefreshAccessTokenAndDo(error, that.fetchData);
         });
     }
   },

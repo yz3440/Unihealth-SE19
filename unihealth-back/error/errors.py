@@ -9,4 +9,5 @@ UNKNOWN_ERROR = (
 DOES_NOT_EXIST = ({"msg": "Does not exists."}, 409)
 NOT_ADMIN = ({"msg": "Admin permission denied."}, 999)
 HEADER_NOT_FOUND = ({"msg": "Header does not exists."}, 999)
+UNAUTHORIZED_ACCESS = ({"msg": "Unauthorized_Access"}, 401)
 EMPTY = ('', 202)

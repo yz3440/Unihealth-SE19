@@ -130,7 +130,6 @@ export default {
           { withCredentials: true }
         )
         .then(response => {
-          console.log(response);
           that.message = response.data.msg;
           that.userSaved = true;
           that.sending = false;

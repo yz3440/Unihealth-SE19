@@ -16,7 +16,6 @@ class Token(Resource):
     # Login user and get the jwt with POST request
     @staticmethod
     def post():
-        print(request.json)
         try:
             phone, password = request.json.get(
                 'phone').strip(), request.json.get('password').strip()
@@ -42,6 +41,34 @@ class Token(Resource):
 
         # Return access token & refresh token.
         return {"msg": "Login successful.", "access_token": access_token.decode('utf-8'), "refresh_token": refresh_token.decode('utf-8')}, 200
+
+    # Refresh user and get the jwt with PUT request
+    @staticmethod
+    def put():
+        try:
+            # Get refresh token.
+            refresh_token = request.json.get('refresh_token').encode('utf-8')
+            print(refresh_token)
+        except Exception as why:
+            return error.INVALID_INPUT
+
+        data = refresh_jwt.loads(refresh_token)
+
+        # Check if phone variables is in refresh token.
+        if 'phone' not in data:
+            return error.INVALID_INPUT
+
+        person = Person.query.filter_by(phone=data['phone']).first()
+
+        if person is None:
+            return error.DOES_NOT_EXIST
+
+        # Generate access token & refresh token
+        access_token = person.generate_access_token()
+        refresh_token = person.generate_refresh_token()
+
+        # Return access token & refresh token.
+        return {"msg": "Refresh successful.", "access_token": access_token.decode('utf-8'), "refresh_token": refresh_token.decode('utf-8')}, 200
 
     # Logout user and delete the jwt with DELETE request
     @staticmethod

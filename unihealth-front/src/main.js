@@ -17,11 +17,26 @@ axios.defaults.withCredentials = true
 axios.defaults.baseURL = "http://0.0.0.0:5001"
 Vue.prototype.$http = axios
 
-// Vue.mixin({
-//   data() {
-//     return {};
-//   }
-// });
+Vue.mixin({
+  data() {
+    return {};
+  },
+  methods: {
+    tryRefreshAccessTokenAndDo(error, func) {
+      if (error.response.status == 401) {
+        this.$http.put("/auth/token", {
+          'refresh_token': this.$cookies.get('refresh_token')
+        }).then(response => {
+          that.$cookies.set("access_token", response.data.access_token);
+          that.$cookies.set("refresh_token", response.data.refresh_token);
+          func();
+        }).catch(error => {
+          console.log(error);
+        })
+      }
+    }
+  }
+});
 
 /* eslint-disable no-new */
 new Vue({

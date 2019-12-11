@@ -42,8 +42,11 @@
                   md-dense
                   :disabled="sending"
                 >
-                  <md-option value="Blood Pressure (mmHg)">Blood Pressure (mmHg)</md-option>
-                  <md-option value="Weight (kg)">Weight (kg)</md-option>
+                  <div v-for="item in healthLogTypes" v-bind:key="item.id">
+                    <md-option :value="item.log_type">{{item.log_type}}</md-option>
+                  </div>
+                  <!-- <md-option value="Blood Pressure (mmHg)">Blood Pressure (mmHg)</md-option>
+                  <md-option value="Weight (kg)">Weight (kg)</md-option>-->
                 </md-select>
               </md-field>
             </div>
@@ -83,6 +86,7 @@ export default {
         birthday: null,
         phone: null
       },
+      healthLogTypes: [],
       healthLogForm: {
         type: null,
         value: null
@@ -105,6 +109,8 @@ export default {
   methods: {
     fetchData() {
       let that = this;
+
+      // Fetch user profile
       this.$http
         .get("/resources/user", {
           headers: {
@@ -122,6 +128,23 @@ export default {
         })
         .catch(error => {
           console.log(error);
+          that.tryRefreshAccessTokenAndDo(error, that.fetchData);
+        });
+
+      // Fetch availbale types of health log
+      this.$http
+        .get("/resources/health_log_types", {
+          headers: {
+            Authorization: "Bearer " + this.$cookies.get("access_token")
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+          that.healthLogTypes = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+          that.tryRefreshAccessTokenAndDo(error, that.fetchData);
         });
     },
     openLogDialog() {
@@ -158,6 +181,7 @@ export default {
           that.message = error.response.data.msg;
           that.logSaved = true;
           that.sending = false;
+          that.tryRefreshAccessTokenAndDo(error, that.addQuickLog);
         });
     },
     clearForm() {
