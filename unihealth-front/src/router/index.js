@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Landing from '@/view/Landing'
 import Register from '@/view/Register'
+import Login from '@/view/Login'
+
 import Profile from '@/view/Profile'
 
 import MainNavbar from '@/components/MainNavbar'
@@ -24,6 +26,14 @@ export default new Router({
       components: {
         header: MainNavbar,
         default: Register
+      }
+    },
+    {
+      path: "/login",
+      name: "login",
+      components: {
+        header: MainNavbar,
+        default: Login
       }
     },
     {

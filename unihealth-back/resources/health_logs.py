@@ -75,10 +75,13 @@ class HealthLogs(Resource):
             logging.info("The user input is invalid. " + str(why))
             return error.INVALID_INPUT
 
+        if not log_value.isnumeric():
+            return error.INVALID_INPUT
+
         health_log = HealthLog(
             owner_id=owner_id, reporter_id=reporter_id, log_type=log_type, log_value=log_value)
 
         db.session.add(health_log)
         db.session.commit()
 
-        return {'status': 'health log added.'}
+        return {'msg': 'The health log has been added.'}

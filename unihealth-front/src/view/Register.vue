@@ -13,9 +13,9 @@
           </md-card-area>
         </md-card-media-cover>
 
-        <!-- First Name Field -->
         <md-card-content>
           <div class="md-layout md-gutter">
+            <!-- First Name Field -->
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('firstName')">
                 <label for="first-name">First Name</label>
@@ -149,12 +149,12 @@
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
         <md-card-actions>
-          <md-button href="#/register" @click="test" class="md-accent">I'm a Doctor</md-button>
+          <md-button href="#/register" class="md-accent">I'm a Doctor</md-button>
           <md-button type="submit" class="md-primary" :disabled="sending">Create new patient user</md-button>
         </md-card-actions>
       </md-card>
 
-      <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved with success!</md-snackbar>
+      <md-snackbar :md-active.sync="userSaved">{{message}}</md-snackbar>
     </form>
   </div>
 </template>
@@ -191,7 +191,7 @@ export default {
     },
     userSaved: false,
     sending: false,
-    lastUser: null
+    message: null
   }),
   validations: {
     form: {
@@ -245,26 +245,11 @@ export default {
     },
     saveUser() {
       this.sending = true;
-      // Instead of this timeout, here you can call your API
-      // this.test();
-      window.setTimeout(() => {
-        this.lastUser = `${this.form.firstName} ${this.form.lastName}`;
-        this.userSaved = true;
-        this.sending = false;
-        console.log(this.form);
 
-        // this.clearForm();
-      }, 1500);
-    },
-    validateUser() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        this.saveUser();
-      }
-    },
-    test() {
+      // Pass in the Vue context
+      let that = this;
       this.$http
-        .post(this.apiUrl + "/auth/register", {
+        .post("/resources/user", {
           firstName: this.form.firstName,
           lastName: this.form.lastName,
           gender: this.form.gender,
@@ -272,12 +257,26 @@ export default {
           phone: this.form.phone,
           password: this.form.password
         })
-        .then(function(response) {
+        .then(response => {
           console.log(response);
+          that.message = response.data.msg;
+          that.userSaved = true;
+          that.sending = false;
+          that.clearForm();
+          that.$router.push("/login");
         })
-        .catch(function(error) {
+        .catch(error => {
           console.log(error);
+          that.message = error.response.data.msg;
+          that.userSaved = true;
+          that.sending = false;
         });
+    },
+    validateUser() {
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        this.saveUser();
+      }
     }
   },
   computed: {

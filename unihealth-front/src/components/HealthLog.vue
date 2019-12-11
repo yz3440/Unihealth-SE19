@@ -5,9 +5,9 @@
       <div>
         <md-table v-model="logs" md-sort="timestamp" md-sort-order="desc" md-fixed-header>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Log Type" md-sort-by="type">{{ item.type }}</md-table-cell>
-            <md-table-cell md-label="Value" md-sort-by="value">{{ item.value }}</md-table-cell>
-            <md-table-cell md-label="Log Time" md-sort-by="timestamp">{{ item.timestamp }}</md-table-cell>
+            <md-table-cell md-label="Log Type" md-sort-by="type">{{ item.log_type }}</md-table-cell>
+            <md-table-cell md-label="Value" md-sort-by="value">{{ item.log_value }}</md-table-cell>
+            <md-table-cell md-label="Log Time" md-sort-by="timestamp">{{ item.created }}</md-table-cell>
           </md-table-row>
         </md-table>
       </div>
@@ -25,16 +25,20 @@ export default {
   },
   methods: {
     fetchData() {
-      this.logs = [
-        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
-        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" },
-        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
-        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" },
-        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
-        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" },
-        { type: "Blood Pressure", value: "100", timestamp: "2019/12/01 19:01" },
-        { type: "Weight", value: "70kg", timestamp: "2019/12/01 19:01" }
-      ];
+      let that = this;
+      this.$http
+        .get("/resources/health_logs", {
+          headers: {
+            Authorization: "Bearer " + this.$cookies.get("access_token")
+          }
+        })
+        .then(response => {
+          console.log(response);
+          that.logs = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
   mounted() {

@@ -29,9 +29,7 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    // ProfileCard.methods.addQuickLog();
-  }
+  mounted() {}
 };
 </script>
 

@@ -5,13 +5,16 @@
     <span style="flex: 1"></span>
     <md-button href="#/login" class="md-primary" v-if="showLogin">Login</md-button>
     <md-button href="#/register" class="md-primary" v-if="showLogin">Register</md-button>
-    <md-button href="#/logout" class="md-primary" v-else>Logout</md-button>
+    <md-button @click="logoutUser" class="md-primary" v-else>Logout</md-button>
   </md-toolbar>
 </template>
 
 <script>
 export default {
   name: "MainNavbar",
+  methods: {
+    logoutUser() {}
+  },
   computed: {
     showLogin() {
       const excludedRoutes = ["/profile"];
