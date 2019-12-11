@@ -19,7 +19,7 @@ class Patient(Person):
 
     def __repr__(self):
         return "<Patient(phone='%s', name='%s %s', password='%s', created='%s')>" % (
-            self.phone, self.first_name, self.last_name, self.password, self.email, self.created)
+            self.phone, self.first_name, self.last_name, self.password, self.created)
 
     @property
     def profile(self):

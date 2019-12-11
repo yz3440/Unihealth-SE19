@@ -5,9 +5,9 @@
       <div>
         <md-table v-model="logs" md-sort="timestamp" md-sort-order="desc" md-fixed-header>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Disease" md-sort-by="type">{{ item.type }}</md-table-cell>
-            <md-table-cell md-label="Symptom" md-sort-by="value">{{ item.value }}</md-table-cell>
-            <md-table-cell md-label="Logged Time" md-sort-by="timestamp">{{ item.timestamp }}</md-table-cell>
+            <md-table-cell md-label="Log Type" md-sort-by="type">{{ item.type }}</md-table-cell>
+            <md-table-cell md-label="Value" md-sort-by="value">{{ item.value }}</md-table-cell>
+            <md-table-cell md-label="Log Time" md-sort-by="timestamp">{{ item.timestamp }}</md-table-cell>
           </md-table-row>
         </md-table>
       </div>

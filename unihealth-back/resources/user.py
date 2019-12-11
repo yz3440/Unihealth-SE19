@@ -1,19 +1,23 @@
 import logging
 from datetime import datetime
 
-from flask import request
+from flask import request, after_this_request
 from flask_restful import Resource
 
 import error.errors as error
-from config.authentication import auth, refresh_jwt
+from config.auth import auth, refresh_jwt
 from database.database import db
 from models.person import Person
 from models.patient import Patient
 from models.doctor import Doctor
 from models.token_blacklist import TokenBlacklist
 
+from models.health_log import HealthLog
 
-class Register(Resource):
+
+class User(Resource):
+
+    # Register user with POST request
     @staticmethod
     def post():
         try:
@@ -28,8 +32,6 @@ class Register(Resource):
             logging.info("The user input is invalid. " + str(why))
             return error.INVALID_INPUT
 
-        print(request.json)
-
         if not first_name or not last_name or not gender or not birthday or not phone or not password:
             return error.INVALID_INPUT
 
@@ -37,10 +39,6 @@ class Register(Resource):
 
         if person is not None:
             return error.ALREADY_EXIST
-
-        # Encrypts password
-        hashedPassword = hashlib.sha256(
-            password.encode("utf-8")).hexdigest()
 
         person = Patient(first_name=first_name, last_name=last_name, gender=gender,
                          birthday=birthday, phone=phone, password=password)
@@ -50,10 +48,17 @@ class Register(Resource):
 
         return {'status': 'registration completed.'}
 
-
-class Login(Resource):
+    # Login user with GET request
     @staticmethod
-    def post():
+    def get():
+        @after_this_request
+        def set_token_cookie(response):
+            response.set_cookie('access_token', access_token,
+                                max_age=64800, httponly=True, path="/auth")
+            response.set_cookie('refresh_token', refresh_token,
+                                max_age=64800, httponly=True, path="/auth")
+            return response
+
         try:
             phone, password = request.json.get(
                 'phone').strip(), request.json.get('password').strip()
@@ -77,14 +82,13 @@ class Login(Resource):
         access_token = person.generate_access_token()
         refresh_token = person.generate_refresh_token()
 
-        # Return access token and refresh token.
-        return {'access_token': access_token.decode('utf-8'), 'refresh_token': refresh_token.decode('utf-8')}
+        # Return access token & refresh token.
+        return {"msg": "Login successful."}, 200
 
-
-class Logout(Resource):
+    # Logout user with DELETE request
     @staticmethod
     @auth.login_required
-    def post():
+    def delete():
 
         # Get refresh token.
         refresh_token = request.json.get('refresh_token')
@@ -93,7 +97,7 @@ class Logout(Resource):
         ref = TokenBlacklist.query.filter_by(
             refresh_token=refresh_token).first()
 
-        # Check refresh token is existed.
+        # Check refresh token has existed.
         if ref is not None:
             return {'status': 'already invalidated', 'refresh_token': refresh_token}
 

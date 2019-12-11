@@ -3,7 +3,7 @@ from datetime import datetime
 
 from flask import g
 
-from config.authentication import auth, jwt, refresh_jwt
+from config.auth import auth, jwt, refresh_jwt
 from database.database import db
 
 
@@ -12,7 +12,7 @@ class Person(db.Model):
     __tablename__ = 'person'
 
     # User phone number as primary key.
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
 
     first_name = db.Column('first_name', db.String, nullable=False)
     last_name = db.Column('last_name', db.String, nullable=False)
@@ -21,11 +21,17 @@ class Person(db.Model):
     phone = db.Column('phone', db.String, unique=True, nullable=False)
     password = db.Column('password', db.String, nullable=False)
 
-    created = db.Column(db.DateTime, default=datetime.utcnow)
+    created = db.Column("created", db.DateTime, default=datetime.utcnow)
 
     # Unless otherwise stated default role is patient.
     role = db.Column('role', db.String, nullable=False, default='patient')
     __mapper_args__ = {'polymorphic_on': role}
+
+    # Other tables
+    owned_health_logs = db.relationship(
+        'HealthLog', backref='owner', lazy='dynamic', foreign_keys='HealthLog.owner_id')
+    reported_health_logs = db.relationship(
+        'HealthLog', backref='reporter', lazy='dynamic', foreign_keys='HealthLog.reporter_id')
 
     def verify_password(self, password):
         hashedPassword = hashlib.sha256(
@@ -85,7 +91,7 @@ class Person(db.Model):
 
     def __repr__(self):
         return "<Person(phone='%s', fullname='%s', password='%s', created='%s', role='%s')>" % (
-            self.phone, self.fullname, self.password, self.email, self.created, self.role)
+            self.phone, self.fullname, self.password, self.created, self.role)
 
     @property
     def profile(self):
