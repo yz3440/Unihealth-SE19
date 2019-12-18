@@ -49,7 +49,7 @@ class Token(Resource):
             # Get refresh token.
             refresh_token = request.json.get('refresh_token').encode('utf-8')
             print(refresh_token)
-        except Exception as why:
+        except Exception:
             return error.INVALID_INPUT
 
         data = refresh_jwt.loads(refresh_token)
@@ -96,4 +96,4 @@ class Token(Resource):
         db.session.commit()
 
         # Return status of refresh token.
-        return {'status': 'invalidated', 'refresh_token': refresh_token}
+        return {'msg': 'Refresh token invalidated.', 'refresh_token': refresh_token}

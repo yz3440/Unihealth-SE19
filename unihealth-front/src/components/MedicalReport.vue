@@ -3,12 +3,12 @@
     <!-- Medical Reports -->
     <md-content class="md-scrollbar">
       <div>
-        <md-table v-model="reports" md-sort="timestamp" md-sort-order="desc" md-fixed-header>
+        <md-table :value="reports" md-sort="created" md-sort-order="desc" md-fixed-header>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Disease" md-sort-by="disease">{{ item.disease }}</md-table-cell>
-            <md-table-cell md-label="Medication" md-sort-by="medication">{{ item.medication }}</md-table-cell>
-            <md-table-cell md-label="Note" md-sort-by="note">{{ item.note }}</md-table-cell>
-            <md-table-cell md-label="Report Time" md-sort-by="timestamp">{{ item.timestamp }}</md-table-cell>
+            <md-table-cell md-label="Related Disease" md-sort-by="disease">{{ item.disease }}</md-table-cell>
+            <!-- <md-table-cell md-label="Medication" md-sort-by="medication">{{ item.medication }}</md-table-cell> -->
+            <md-table-cell md-label="Medical Note" md-sort-by="note">{{ item.note }}</md-table-cell>
+            <md-table-cell md-label="Report Time" md-sort-by="-created">{{ item.created }}</md-table-cell>
           </md-table-row>
         </md-table>
       </div>
@@ -17,39 +17,23 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "medical-report",
-  data() {
-    return {
-      reports: [
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/01 19:01",
-          note: "Eat less sugarEat less sugarEat less sugar"
-        },
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/01 19:01",
-          note: "Eat less sugarEat less sugarEat less sugar"
-        },
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/01 19:01",
-          note: "Eat less sugarEat less sugarEat less sugar"
-        },
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/01 19:01",
-          note: "Eat less sugarEat less sugarEat less sugar"
-        }
-      ]
-    };
+  computed: {
+    ...mapGetters({
+      reports: "medicalReports"
+    })
   },
-  methods: {}
+  methods: {
+    fetchData() {
+      this.$store.dispatch("fetchMedicalReports");
+    }
+  },
+  mounted() {
+    this.fetchData();
+  }
 };
 </script>
 

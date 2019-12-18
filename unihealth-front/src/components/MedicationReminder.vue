@@ -3,14 +3,11 @@
     <!-- Medication Reminder -->
     <md-content class="md-scrollbar">
       <div>
-        <md-table v-model="reports" md-sort="timestamp" md-sort-order="asc" md-fixed-header>
+        <md-table :value="reminders" md-sort="created" md-sort-order="desc" md-fixed-header>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Medication" md-sort-by="medication">{{ item.medication }}</md-table-cell>
+            <md-table-cell md-label="Medicine" md-sort-by="medicine">{{ item.medicine }}</md-table-cell>
             <md-table-cell md-label="Disease" md-sort-by="disease">{{ item.disease }}</md-table-cell>
-            <md-table-cell
-              md-label="Next Time of Intake"
-              md-sort-by="timestamp"
-            >{{ item.timestamp }}</md-table-cell>
+            <md-table-cell md-label="Next Time of Intake" md-sort-by="created">{{ item.created }}</md-table-cell>
           </md-table-row>
         </md-table>
       </div>
@@ -19,30 +16,23 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "medication-reminder",
-  data() {
-    return {
-      reports: [
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/08 19:00"
-        },
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/09 19:00"
-        },
-        {
-          disease: "Diabetes",
-          medication: "Insulin shots",
-          timestamp: "2019/12/10 19:01"
-        }
-      ]
-    };
+  computed: {
+    ...mapGetters({
+      reminders: "medicationReminders"
+    })
   },
-  methods: {}
+  methods: {
+    fetchData() {
+      this.$store.dispatch("fetchMedicationReminders");
+    }
+  },
+  mounted() {
+    this.fetchData();
+  }
 };
 </script>
 

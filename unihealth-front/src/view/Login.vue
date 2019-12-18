@@ -8,7 +8,7 @@
           </md-card-media>
           <md-card-area>
             <md-card-header>
-              <div class="md-title">Login Unihealth</div>
+              <div class="md-title">Login Unihealth as a Patient or Doctor</div>
             </md-card-header>
           </md-card-area>
         </md-card-media-cover>
@@ -51,9 +51,8 @@
           <md-button type="submit" class="md-primary" :disabled="sending">Login</md-button>
         </md-card-actions>
       </md-card>
-
-      <md-snackbar :md-active.sync="userSaved">{{message}}</md-snackbar>
     </form>
+    <md-snackbar :md-active="userSaved">{{message}}</md-snackbar>
   </div>
 </template>
 
@@ -111,14 +110,6 @@ export default {
       this.sending = true;
 
       // Pass in the Vue context
-      // let that = this;
-
-      console.log({
-        phone: this.form.phone,
-        password: this.form.password
-      });
-
-      // Pass in the Vue context
       let that = this;
       this.$http
         .post(
@@ -134,8 +125,10 @@ export default {
           that.userSaved = true;
           that.sending = false;
           that.clearForm();
-          that.$cookies.set("access_token", response.data.access_token);
-          that.$cookies.set("refresh_token", response.data.refresh_token);
+
+          localStorage.access_token = response.data.access_token;
+          localStorage.refresh_token = response.data.refresh_token;
+
           that.$router.push("/profile");
         })
         .catch(error => {
@@ -150,20 +143,6 @@ export default {
       if (!this.$v.$invalid) {
         this.loginUser();
       }
-    }
-  },
-  computed: {
-    currentDate() {
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth() + 1; //Because January is 0
-      var yyyy = today.getFullYear();
-
-      if (dd < 10) dd = "0" + dd;
-      if (mm < 10) mm = "0" + mm;
-
-      today = yyyy + "-" + mm + "-" + dd;
-      return today;
     }
   }
 };

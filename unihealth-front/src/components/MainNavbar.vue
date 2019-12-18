@@ -1,6 +1,5 @@
 <template>
   <md-toolbar class="md-transparent" md-elevation="1">
-    <!-- <h3 class="md-title" style="flex: 1">Unihealth</h3> -->
     <a href="#/" class="md-title">Unihealth</a>
     <span style="flex: 1"></span>
     <md-button href="#/login" class="md-primary" v-if="showLogin">Login</md-button>
@@ -13,7 +12,28 @@
 export default {
   name: "MainNavbar",
   methods: {
-    logoutUser() {}
+    logoutUser() {
+      let that = this;
+      this.$http
+        .delete("/auth/token", {
+          headers: {
+            Authorization: "Bearer " + localStorage.access_token
+          },
+          data: {
+            refresh_token: localStorage.refresh_token
+          }
+        })
+        .then(response => {
+          console.log(response);
+          localStorage.access_token = null;
+          localStorage.refresh_token = null;
+          that.$store.commit("resetState");
+          that.$router.push("/");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   },
   computed: {
     showLogin() {

@@ -3,7 +3,7 @@ NOT_FOUND_404 = ({"msg": "Resource could not be found."}, 404)
 NO_INPUT_400 = ({"msg": "No input data provided."}, 400)
 INVALID_INPUT = ({"msg": "Invalid input."}, 422)
 INVALID_PASSWORD = ({"msg": "Invalid password."}, 422)
-ALREADY_EXIST = ({'msg': 'An user has existed.'}, 400)
+ALREADY_EXIST = ({'msg': 'The resource you want to add already exists.'}, 400)
 UNKNOWN_ERROR = (
     {'status': 400, 'msg': 'An unknown error has occured. Please try again.'}, 400)
 DOES_NOT_EXIST = ({"msg": "Does not exists."}, 409)

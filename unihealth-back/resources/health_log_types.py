@@ -1,12 +1,13 @@
 import logging
 
-from flask import request
+from flask import request, g
 from flask_restful import Resource
-from flask import g
 
 import error.errors as error
-from config.auth import auth, refresh_jwt
+from config.auth import auth
 from database.database import db
+from models.admin import Admin
+
 
 from models.health_log_type import HealthLogType, HealthLogTypeSchema
 
@@ -19,7 +20,6 @@ class HealthLogTypes(Resource):
     @staticmethod
     @auth.login_required
     def get():
-
         health_log_types = HealthLogType.query.all()
 
         # Serializing health log types
@@ -40,6 +40,12 @@ class HealthLogTypes(Resource):
         except Exception as why:
             logging.info("The user input is invalid. " + str(why))
             return error.INVALID_INPUT
+
+        health_log_type = HealthLogType.query.filter_by(
+            log_type=log_type).first()
+
+        if health_log_type is not None:
+            return error.ALREADY_EXIST
 
         health_log_type = HealthLogType(log_type=log_type)
 

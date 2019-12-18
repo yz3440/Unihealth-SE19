@@ -3,11 +3,11 @@
     <!-- Health Records -->
     <md-content class="md-scrollbar">
       <div>
-        <md-table v-model="logs" md-sort="timestamp" md-sort-order="desc" md-fixed-header>
+        <md-table :value="logs" md-sort="created" md-sort-order="desc" md-fixed-header>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Log Type" md-sort-by="type">{{ item.log_type }}</md-table-cell>
-            <md-table-cell md-label="Value" md-sort-by="value">{{ item.log_value }}</md-table-cell>
-            <md-table-cell md-label="Log Time" md-sort-by="timestamp">{{ item.created }}</md-table-cell>
+            <md-table-cell md-label="Log Type" md-sort-by="log_type">{{ item.log_type }}</md-table-cell>
+            <md-table-cell md-label="Value" md-sort-by="log_value">{{ item.log_value }}</md-table-cell>
+            <md-table-cell md-label="Log Time" md-sort-by="-created">{{ item.created }}</md-table-cell>
           </md-table-row>
         </md-table>
       </div>
@@ -16,30 +16,18 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "health-log",
-  data() {
-    return {
-      logs: []
-    };
+  computed: {
+    ...mapGetters({
+      logs: "healthLogs"
+    })
   },
   methods: {
     fetchData() {
-      let that = this;
-      this.$http
-        .get("/resources/health_logs", {
-          headers: {
-            Authorization: "Bearer " + this.$cookies.get("access_token")
-          }
-        })
-        .then(response => {
-          console.log(response);
-          that.logs = response.data;
-        })
-        .catch(error => {
-          console.log(error);
-          that.tryRefreshAccessTokenAndDo(error, that.fetchData);
-        });
+      this.$store.dispatch("fetchHealthLogs");
     }
   },
   mounted() {

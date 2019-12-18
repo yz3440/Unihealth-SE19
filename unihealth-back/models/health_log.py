@@ -1,9 +1,9 @@
-from models.person import *
 from database.database import db, ma
 from datetime import datetime
 
 
 class HealthLog(db.Model):
+
     __tablename__ = 'health_log'
 
     id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)

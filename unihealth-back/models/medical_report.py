@@ -1,10 +1,9 @@
-from models.person import *
 from database.database import db, ma
 from datetime import datetime
 
 
 class MedicalReport(db.Model):
-    __tablename__ = 'health_log'
+    __tablename__ = 'medical_report'
 
     id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
 
@@ -14,13 +13,16 @@ class MedicalReport(db.Model):
     reporter_id = db.Column("reporter_id", db.Integer,
                             db.ForeignKey('person.id'), nullable=True)
 
-    log_type = db.Column("type", db.String, nullable=False)
+    disease = db.Column("disease", db.String, nullable=False)
 
-    log_value = db.Column("value", db.String, nullable=False)
+    note = db.Column("note", db.String, nullable=False)
 
     created = db.Column("created", db.DateTime, default=datetime.utcnow)
 
+    # suggested_medications = db.relationship(
+    #     'MedicationReminder', backref='report', lazy='dynamic', foreign_keys='MedicationReminder.report_id')
 
-class HealthLogSchema(ma.ModelSchema):
+
+class MedicalReportSchema(ma.ModelSchema):
     class Meta:
-        model = HealthLog
+        model = MedicalReport

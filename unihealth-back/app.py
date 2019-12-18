@@ -1,9 +1,10 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-from config.routes import init_routes
 from database.database import db
 from database.database import ma
+from config.routes import init_routes
+from config.database import init_database
 
 
 def create_app():
@@ -18,6 +19,7 @@ def create_app():
     ma.init_app(app)
     with app.app_context():
         # db.drop_all()
+        # init_database(db)
         db.create_all()
 
     return app
@@ -27,4 +29,5 @@ if __name__ == "__main__":
     app = create_app()
     CORS(app, supports_credentials=True)
     init_routes(app)
+
     app.run(port=5001, debug=True, host='0.0.0.0', use_reloader=True)

@@ -32,6 +32,10 @@ class Person(db.Model):
         'HealthLog', backref='owner', lazy='dynamic', foreign_keys='HealthLog.owner_id')
     reported_health_logs = db.relationship(
         'HealthLog', backref='reporter', lazy='dynamic', foreign_keys='HealthLog.reporter_id')
+    # owned_medical_reports = db.relationship(
+    #     'MedicalReport', backref='owner', lazy='dynamic', foreign_keys='MedicalReport.owner_id')
+    # reported_medical_reports = db.relationship(
+    #     'MedicalReport', backref='reporter', lazy='dynamic', foreign_keys='MedicalReport.reporter_id')
 
     def verify_password(self, password):
         hashedPassword = hashlib.sha256(
@@ -93,4 +97,4 @@ class Person(db.Model):
 class PersonSchema(ma.Schema):
     class Meta:
         fields = ('id', "first_name", "last_name",
-                  "birthday", "gender", "phone")
+                  "birthday", "gender", "phone", "role")

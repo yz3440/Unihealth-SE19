@@ -8,7 +8,7 @@
           </md-card-media>
           <md-card-area>
             <md-card-header>
-              <div class="md-title">Join Unihealth as a Patient User</div>
+              <div class="md-title">Join Unihealth as a Patient or Doctor</div>
             </md-card-header>
           </md-card-area>
         </md-card-media-cover>
@@ -149,13 +149,22 @@
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
         <md-card-actions>
-          <md-button href="#/register" class="md-accent">I'm a Doctor</md-button>
-          <md-button type="submit" class="md-primary" :disabled="sending">Create new patient user</md-button>
+          <md-button
+            @click="role='doctor'"
+            type="submit"
+            class="md-accent"
+            :disabled="sending"
+          >Create new doctor user</md-button>
+          <md-button
+            @click="role='patient'"
+            type="submit"
+            class="md-primary"
+            :disabled="sending"
+          >Create new patient user</md-button>
         </md-card-actions>
       </md-card>
-
-      <md-snackbar :md-active.sync="userSaved">{{message}}</md-snackbar>
     </form>
+    <md-snackbar :md-active="userSaved">{{message}}</md-snackbar>
   </div>
 </template>
 
@@ -189,6 +198,7 @@ export default {
       password: null,
       repeatPassword: null
     },
+    role: "patient",
     userSaved: false,
     sending: false,
     message: null
@@ -243,7 +253,7 @@ export default {
       this.form.password = null;
       this.form.repeatPassword = null;
     },
-    saveUser() {
+    registerUser() {
       this.sending = true;
 
       // Pass in the Vue context
@@ -255,7 +265,8 @@ export default {
           gender: this.form.gender,
           birthday: this.form.birthday,
           phone: this.form.phone,
-          password: this.form.password
+          password: this.form.password,
+          role: this.role
         })
         .then(response => {
           console.log(response);
@@ -275,22 +286,8 @@ export default {
     validateUser() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        this.saveUser();
+        this.registerUser();
       }
-    }
-  },
-  computed: {
-    currentDate() {
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth() + 1; //Because January is 0
-      var yyyy = today.getFullYear();
-
-      if (dd < 10) dd = "0" + dd;
-      if (mm < 10) mm = "0" + mm;
-
-      today = yyyy + "-" + mm + "-" + dd;
-      return today;
     }
   }
 };

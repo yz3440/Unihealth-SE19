@@ -29,7 +29,7 @@ class HealthLogs(Resource):
         # User being a doctor or admin
         else:
             try:
-                owner_phone = request.json.get('phone').strip()
+                owner_phone = request.args.get('phone').strip()
 
             except Exception as why:
                 logging.info("The user input is invalid. " + str(why))
@@ -57,7 +57,7 @@ class HealthLogs(Resource):
             reporter_id = Person.query.filter_by(
                 phone=g.user).first().id
             try:
-                owner_phone = request.json.get('phone').strip(),
+                owner_phone = request.json.get('phone').strip()
             except Exception as why:
                 logging.info("The user input is invalid. " + str(why))
                 return error.INVALID_INPUT
@@ -66,7 +66,7 @@ class HealthLogs(Resource):
             # Check the patient being reported exists.
             if owner is None:
                 return error.DOES_NOT_EXIST
-
+            owner_id = owner.id
         try:
             log_type, log_value = request.json.get(
                 'type').strip(), request.json.get('value').strip()

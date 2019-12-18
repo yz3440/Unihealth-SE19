@@ -4,36 +4,31 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueMaterial from 'vue-material'
-import VueCookies from 'vue-cookies'
 import 'vue-material/dist/vue-material.min.css'
 import "./assets/scss/theme.scss";
 import axios from 'axios';
+import store from "./store"
 
 Vue.config.productionTip = true
 Vue.use(VueMaterial)
-Vue.use(VueCookies)
 
 axios.defaults.withCredentials = true
 axios.defaults.baseURL = "http://0.0.0.0:5001"
 Vue.prototype.$http = axios
 
 Vue.mixin({
-  data() {
-    return {};
-  },
-  methods: {
-    tryRefreshAccessTokenAndDo(error, func) {
-      if (error.response.status == 401) {
-        this.$http.put("/auth/token", {
-          'refresh_token': this.$cookies.get('refresh_token')
-        }).then(response => {
-          that.$cookies.set("access_token", response.data.access_token);
-          that.$cookies.set("refresh_token", response.data.refresh_token);
-          func();
-        }).catch(error => {
-          console.log(error);
-        })
-      }
+  computed: {
+    currentDate() {
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth() + 1; //Because January is 0
+      var yyyy = today.getFullYear();
+
+      if (dd < 10) dd = "0" + dd;
+      if (mm < 10) mm = "0" + mm;
+
+      today = yyyy + "-" + mm + "-" + dd;
+      return today;
     }
   }
 });
@@ -42,6 +37,7 @@ Vue.mixin({
 new Vue({
   el: '#app',
   router,
+  store,
   components: {
     App
   },

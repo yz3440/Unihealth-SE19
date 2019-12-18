@@ -5,6 +5,8 @@
       <div class="md-layout-item md-size-20">
         <!-- Profile Card -->
         <profile-card></profile-card>
+        <!-- Action Card -->
+        <action-card></action-card>
       </div>
 
       <!-- Right section -->
@@ -19,12 +21,14 @@
 <script>
 import ProfileCard from "../components/ProfileCard";
 import RecordsCard from "../components/RecordsCard";
+import ActionCard from "../components/ActionCard";
 
 export default {
   name: "profile",
   components: {
     ProfileCard,
-    RecordsCard
+    RecordsCard,
+    ActionCard
   },
   data() {
     return {};
