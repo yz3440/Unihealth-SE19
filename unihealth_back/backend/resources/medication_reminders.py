@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 from flask import request, g
 from flask_restful import Resource
 
-import error.errors as error
-from config.auth import auth
-from database.database import db
-from models.patient import Patient
-from models.doctor import Doctor
+import backend.error.errors as error
+from backend.config.auth import auth
+from backend.database.database import db
+from backend.models.patient import Patient
+from backend.models.doctor import Doctor
 
-from models.medication_reminder import MedicationReminder, MedicationReminderSchema
+from backend.models.medication_reminder import MedicationReminder, MedicationReminderSchema
 
 medication_reminder_schema = MedicationReminderSchema()
 medication_reminders_schema = MedicationReminderSchema(many=True)

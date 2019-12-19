@@ -1,0 +1,1 @@
+from unihealth_back.tests.test_base import *

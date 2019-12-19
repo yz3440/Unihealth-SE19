@@ -1,4 +1,4 @@
-from models.admin import Admin
+from backend.models.admin import Admin
 from datetime import datetime
 
 

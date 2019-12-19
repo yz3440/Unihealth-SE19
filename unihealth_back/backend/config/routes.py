@@ -1,10 +1,10 @@
 from flask_restful import Api
-from resources.user import User
-from resources.token import Token
-from resources.health_logs import HealthLogs
-from resources.health_log_types import HealthLogTypes
-from resources.medical_reports import MedicalReports
-from resources.medication_reminders import MedicationReminders
+from backend.resources.user import User
+from backend.resources.token import Token
+from backend.resources.health_logs import HealthLogs
+from backend.resources.health_log_types import HealthLogTypes
+from backend.resources.medical_reports import MedicalReports
+from backend.resources.medication_reminders import MedicationReminders
 
 
 def init_routes(app):

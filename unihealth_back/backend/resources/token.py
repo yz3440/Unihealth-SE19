@@ -4,11 +4,11 @@ from datetime import datetime
 from flask import request
 from flask_restful import Resource
 
-import error.errors as error
-from config.auth import auth, refresh_jwt
-from database.database import db
-from models.person import Person
-from models.token_blacklist import TokenBlacklist
+import backend.error.errors as error
+from backend.config.auth import auth, refresh_jwt
+from backend.database.database import db
+from backend.models.person import Person
+from backend.models.token_blacklist import TokenBlacklist
 
 
 class Token(Resource):

@@ -6,12 +6,12 @@ from flask_restful import Resource
 from flask import g
 
 
-import error.errors as error
-from config.auth import auth, refresh_jwt
-from database.database import db
-from models.person import Person
-from models.patient import Patient
-from models.health_log import HealthLog, HealthLogSchema
+import backend.error.errors as error
+from backend.config.auth import auth, refresh_jwt
+from backend.database.database import db
+from backend.models.person import Person
+from backend.models.patient import Patient
+from backend.models.health_log import HealthLog, HealthLogSchema
 
 health_log_schema = HealthLogSchema()
 health_logs_schema = HealthLogSchema(many=True)

@@ -3,13 +3,13 @@ import logging
 from flask import request, g
 from flask_restful import Resource
 
-import error.errors as error
-from config.auth import auth
-from database.database import db
-from models.patient import Patient
-from models.doctor import Doctor
+import backend.error.errors as error
+from backend.config.auth import auth
+from backend.database.database import db
+from backend.models.patient import Patient
+from backend.models.doctor import Doctor
 
-from models.medical_report import MedicalReport, MedicalReportSchema
+from backend.models.medical_report import MedicalReport, MedicalReportSchema
 
 medical_report_schema = MedicalReportSchema()
 medical_reports_schema = MedicalReportSchema(many=True)

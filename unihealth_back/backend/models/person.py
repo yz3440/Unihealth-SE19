@@ -3,8 +3,8 @@ from datetime import datetime
 
 from flask import g
 
-from config.auth import auth, jwt, refresh_jwt
-from database.database import db, ma
+from backend.config.auth import auth, jwt, refresh_jwt
+from backend.database.database import db, ma
 
 
 class Person(db.Model):

@@ -4,12 +4,13 @@ from datetime import datetime
 from flask import request, g
 from flask_restful import Resource
 
-import error.errors as error
-from config.auth import auth, refresh_jwt
-from database.database import db
-from models.person import Person, PersonSchema
-from models.patient import Patient
-from models.doctor import Doctor
+import backend.error.errors as error
+from backend.config.auth import auth, refresh_jwt
+from backend.database.database import db
+from backend.models.person import Person, PersonSchema
+from backend.models.patient import Patient
+from backend.models.doctor import Doctor
+from backend.models.admin import Admin
 
 person_schema = PersonSchema()
 people_schema = PersonSchema(many=True)
@@ -43,8 +44,11 @@ class User(Resource):
         if role == 'patient':
             person = Patient(first_name=first_name, last_name=last_name, gender=gender,
                              birthday=birthday, phone=phone, password=password)
-        else:
+        elif role == 'doctor':
             person = Doctor(first_name=first_name, last_name=last_name, gender=gender,
+                            birthday=birthday, phone=phone, password=password)
+        elif role == 'admin':
+            person = Admin(first_name=first_name, last_name=last_name, gender=gender,
                             birthday=birthday, phone=phone, password=password)
 
         db.session.add(person)

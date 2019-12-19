@@ -1,6 +1,6 @@
 import hashlib
-from models.person import Person
-from database.database import db
+from backend.models.person import Person
+from backend.database.database import db
 
 
 class Doctor(Person):

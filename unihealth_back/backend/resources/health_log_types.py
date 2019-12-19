@@ -3,13 +3,13 @@ import logging
 from flask import request, g
 from flask_restful import Resource
 
-import error.errors as error
-from config.auth import auth
-from database.database import db
-from models.admin import Admin
+import backend.error.errors as error
+from backend.config.auth import auth
+from backend.database.database import db
+from backend.models.admin import Admin
 
 
-from models.health_log_type import HealthLogType, HealthLogTypeSchema
+from backend.models.health_log_type import HealthLogType, HealthLogTypeSchema
 
 health_log_type_schema = HealthLogTypeSchema()
 health_log_types_schema = HealthLogTypeSchema(many=True)

@@ -1,10 +1,10 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-from database.database import db
-from database.database import ma
-from config.routes import init_routes
-from config.database import init_database
+from backend.database.database import db
+from backend.database.database import ma
+from backend.config.routes import init_routes
+from backend.config.database import init_database
 
 
 def create_app():
